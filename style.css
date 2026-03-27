@@ -23,19 +23,19 @@ body {
     text-align: center;
     padding: 20px;
     border-radius: 10px;
-    border: 4px solid #5BBE42;
+    border: 4px solid #078065;
     animation: borderTransition 2s infinite alternate; 
 }
 
 @keyframes borderTransition {
     0% {
-        border-color: red; 
+        border-color: rgb(3, 13, 66); 
     }
     50% {
-        border-color: blue; 
+        border-color: rgb(110, 10, 97); 
     }
     100% {
-        border-color: green; 
+        border-color: rgb(138, 4, 71); 
     }
 }
 
@@ -67,7 +67,7 @@ button:hover{
 
 body {
     height: 100vh;
-    background: linear-gradient(to left, blue, orangered, green);
+    background: linear-gradient(to left, rgb(3, 3, 61), rgb(145, 39, 1), rgb(80, 21, 77));
     display: flex;
     align-items: center;
     justify-content: center;
@@ -75,7 +75,7 @@ body {
 }
 
 p:hover {
-    color: green; 
+    color: rgb(123, 2, 139); 
     font-weight: bold;
 }
 

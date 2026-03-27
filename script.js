@@ -1,8 +1,59 @@
-// ===== ESTADOS DA NARRATIVA =====
+// ===== CONFIGURAÇÕES =====
 let currentState = 'start';
 let timerInterval;
-let timeSeconds = 7 * 3600 + 2 * 60 + 25; // 07:02:25
+let timeSeconds = 7 * 3600 + 2 * 60 + 25;
 let totalTime = timeSeconds;
+let decisionsCount = 0;
+let flowLevel = 0;
+
+// ===== PARTÍCULAS EM CANVAS =====
+class ParticleSystem {
+    constructor() {
+        this.canvas = document.getElementById('particlesCanvas');
+        if (!this.canvas) return;
+        this.ctx = this.canvas.getContext('2d');
+        this.particles = [];
+        this.init();
+        this.animate();
+        window.addEventListener('resize', () => this.resize());
+    }
+    
+    resize() {
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+    }
+    
+    init() {
+        this.resize();
+        const particleCount = 50;
+        for (let i = 0; i < particleCount; i++) {
+            this.particles.push({
+                x: Math.random() * this.canvas.width,
+                y: Math.random() * this.canvas.height,
+                radius: Math.random() * 2 + 1,
+                alpha: Math.random() * 0.3,
+                speed: Math.random() * 0.5 + 0.2
+            });
+        }
+    }
+    
+    animate() {
+        if (!this.ctx) return;
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        
+        this.particles.forEach(p => {
+            p.y -= p.speed;
+            if (p.y < 0) p.y = this.canvas.height;
+            
+            this.ctx.beginPath();
+            this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+            this.ctx.fillStyle = `rgba(255, 215, 0, ${p.alpha})`;
+            this.ctx.fill();
+        });
+        
+        requestAnimationFrame(() => this.animate());
+    }
+}
 
 // ===== ÁRVORE DE DECISÕES =====
 const story = {
@@ -10,9 +61,9 @@ const story = {
         text: "🎤 Você está prestes a entrar no estúdio com Matuê para gravar uma faixa. O beat já está tocando. O que você faz?",
         icon: "fa-microphone-alt",
         choices: [
-            { text: "🔥 Mandar um flow superfantástico na hora", icon: "fa-fire", next: "flowBrabo" },
-            { text: "🎧 Pedir pra ouvir o beat mais uma vez", icon: "fa-headphones", next: "ouvirBeat" },
-            { text: "💡 Sugerir um sample de guitarra (estilo Máquina do Tempo)", icon: "fa-guitar", next: "sampleGuitarra" }
+            { text: "🔥 Mandar um flow superfantástico na hora", icon: "fa-fire", next: "flowBrabo", flowBonus: 30 },
+            { text: "🎧 Pedir pra ouvir o beat mais uma vez", icon: "fa-headphones", next: "ouvirBeat", flowBonus: 15 },
+            { text: "💡 Sugerir um sample de guitarra", icon: "fa-guitar", next: "sampleGuitarra", flowBonus: 25 }
         ]
     },
     flowBrabo: {
@@ -45,52 +96,69 @@ const story = {
     }
 };
 
-// ===== FUNÇÃO PARA ATUALIZAR A INTERFACE =====
+// ===== FUNÇÕES DE UI =====
 function updateUI() {
     const state = story[currentState];
     if (!state) return;
     
-    // Atualizar texto da história
-    const storyText = document.getElementById('story-text');
-    const storyIcon = document.querySelector('.story-icon i');
+    const storyText = document.getElementById('storyText');
+    const storyIcon = document.querySelector('.story-icon-wrapper i');
     
-    storyText.innerText = state.text;
-    storyIcon.className = `fas ${state.icon}`;
+    if (storyText) storyText.innerText = state.text;
+    if (storyIcon) storyIcon.className = `fas ${state.icon}`;
     
-    // Atualizar botões de escolha
-    const choicesContainer = document.getElementById('choices');
-    choicesContainer.innerHTML = '';
-    
-    state.choices.forEach(choice => {
-        const btn = document.createElement('button');
-        btn.className = 'choice-btn';
-        btn.innerHTML = `
-            <i class="fas ${choice.icon}"></i>
-            <span>${choice.text}</span>
-        `;
-        btn.onclick = () => makeChoice(choice.next);
-        choicesContainer.appendChild(btn);
-    });
+    const choicesGrid = document.getElementById('choicesGrid');
+    if (choicesGrid) {
+        choicesGrid.innerHTML = '';
+        
+        state.choices.forEach(choice => {
+            const btn = document.createElement('button');
+            btn.className = 'choice-button';
+            btn.innerHTML = `
+                <i class="fas ${choice.icon}"></i>
+                <span>${choice.text}</span>
+            `;
+            btn.onclick = () => makeChoice(choice);
+            choicesGrid.appendChild(btn);
+        });
+    }
 }
 
-// ===== FUNÇÃO PARA PROCESSAR ESCOLHA =====
-function makeChoice(nextState) {
-    if (nextState === 'start') {
+function makeChoice(choice) {
+    if (choice.next === 'start') {
         resetGame();
         return;
     }
-    currentState = nextState;
+    
+    decisionsCount++;
+    if (choice.flowBonus) {
+        flowLevel = Math.min(100, flowLevel + choice.flowBonus);
+    }
+    
+    updateMetrics();
+    currentState = choice.next;
     updateUI();
 }
 
-// ===== FUNÇÃO PARA REINICIAR O JOGO =====
+function updateMetrics() {
+    const decisionsSpan = document.getElementById('decisionsCount');
+    const flowSpan = document.getElementById('flowLevel');
+    
+    if (decisionsSpan) decisionsSpan.innerText = decisionsCount;
+    if (flowSpan) flowSpan.innerText = `${flowLevel}%`;
+}
+
 function resetGame() {
     currentState = 'start';
-    resetTimer();
+    decisionsCount = 0;
+    flowLevel = 0;
+    timeSeconds = totalTime;
+    updateMetrics();
     updateUI();
+    resetTimer();
 }
 
-// ===== FUNÇÕES DO TIMER =====
+// ===== TIMER =====
 function formatTime(seconds) {
     const hrs = Math.floor(seconds / 3600);
     const mins = Math.floor((seconds % 3600) / 60);
@@ -99,16 +167,13 @@ function formatTime(seconds) {
 }
 
 function updateTimerDisplay() {
-    const timerElement = document.getElementById('timer');
-    const progressBar = document.getElementById('timer-progress');
+    const timerDisplay = document.getElementById('timerDisplay');
+    const timerFill = document.getElementById('timerFill');
     
-    if (timerElement) {
-        timerElement.innerText = formatTime(timeSeconds);
-    }
-    
-    if (progressBar) {
-        const progressPercent = (timeSeconds / totalTime) * 100;
-        progressBar.style.width = `${Math.max(0, progressPercent)}%`;
+    if (timerDisplay) timerDisplay.innerText = formatTime(timeSeconds);
+    if (timerFill) {
+        const percent = (timeSeconds / totalTime) * 100;
+        timerFill.style.width = `${Math.max(0, percent)}%`;
     }
 }
 
@@ -121,7 +186,6 @@ function startTimer() {
             updateTimerDisplay();
         } else {
             clearInterval(timerInterval);
-            // Quando o tempo acabar, força um final especial
             if (currentState === 'start') {
                 currentState = 'timeout';
                 updateUI();
@@ -137,39 +201,29 @@ function resetTimer() {
     startTimer();
 }
 
-// ===== FUNÇÃO PARA PARAR O TIMER (quando o jogo termina) =====
-function stopTimer() {
-    if (timerInterval) {
-        clearInterval(timerInterval);
-        timerInterval = null;
-    }
+// ===== PROGRESS BAR DE LEITURA =====
+function setupReadingProgress() {
+    const progressBar = document.getElementById('progressBar');
+    if (!progressBar) return;
+    
+    window.addEventListener('scroll', () => {
+        const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = (winScroll / height) * 100;
+        progressBar.style.width = `${scrolled}%`;
+    });
 }
 
 // ===== INICIALIZAÇÃO =====
 document.addEventListener('DOMContentLoaded', () => {
+    new ParticleSystem();
     updateUI();
     startTimer();
+    updateMetrics();
+    setupReadingProgress();
     
-    // Adicionar evento ao botão reiniciar
-    const restartBtn = document.getElementById('restart-btn');
+    const restartBtn = document.getElementById('restartButton');
     if (restartBtn) {
-        restartBtn.addEventListener('click', () => {
-            resetGame();
-        });
+        restartBtn.addEventListener('click', resetGame);
     }
 });
-
-// ===== OBSERVADOR PARA PAUSAR TIMER EM FINAIS =====
-// Monitora mudanças no estado para pausar o timer quando o jogo termina
-const originalMakeChoice = makeChoice;
-window.makeChoice = function(nextState) {
-    const state = story[currentState];
-    // Se está em um final (apenas 1 opção de recomeçar), para o timer
-    if (state && state.choices.length === 1 && state.choices[0].next === 'start') {
-        stopTimer();
-    }
-    originalMakeChoice(nextState);
-};
-
-// Sobrescrever para funcionar com o clique
-makeChoice = window.makeChoice;

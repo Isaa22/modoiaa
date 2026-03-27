@@ -3,70 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Modo Matuê | Escolha Seu Flow</title>
+    <meta name="description" content="Uma experiência interativa no universo de Matuê - Escolha seu flow e descubra seu destino">
+    <title>30PRAUM | Escolha Seu Flow</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <!-- Header com logo e título -->
-        <div class="header">
-            <div class="logo-container">
-                <i class="fas fa-crown logo-icon"></i>
-                <span class="logo-text">30PRAUM</span>
-            </div>
-            <h1>ESCOLHA SEU FLOW</h1>
-            <p class="subtitle">Uma jornada no universo de Matuê</p>
+    <!-- Efeito de grão sutil -->
+    <div class="grain"></div>
+    
+    <!-- Partículas de fundo -->
+    <canvas id="particlesCanvas"></canvas>
+    
+    <div class="app">
+        <!-- Barra de progresso de leitura -->
+        <div class="reading-progress">
+            <div class="progress-bar" id="progressBar"></div>
         </div>
-
-        <!-- Card principal da história -->
-        <div class="story-card">
-            <div class="story-content">
-                <div class="story-icon">
-                    <i class="fas fa-microphone-alt"></i>
+        
+        <div class="container">
+            <!-- Header com navegação minimalista -->
+            <header class="header">
+                <nav class="nav">
+                    <div class="logo">
+                        <svg class="logo-svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+                            <path d="M16 2L4 9L16 16L28 9L16 2Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                            <path d="M4 16L16 23L28 16" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                            <path d="M4 23L16 30L28 23" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        </svg>
+                        <span>30PRAUM</span>
+                    </div>
+                    <div class="nav-badge">
+                        <i class="fas fa-crown"></i>
+                        <span>Matuê</span>
+                    </div>
+                </nav>
+                
+                <div class="hero">
+                    <div class="hero-badge">
+                        <span>INTERACTIVE EXPERIENCE</span>
+                    </div>
+                    <h1 class="hero-title">
+                        Escolha seu
+                        <span class="gradient-text">Flow</span>
+                    </h1>
+                    <p class="hero-subtitle">Cada decisão molda sua jornada no universo 30PRAUM</p>
                 </div>
-                <p id="story-text" class="story-text">
-                    Você está prestes a entrar no estúdio com Matuê para gravar uma faixa. 
-                    O beat já está tocando. O que você faz?
-                </p>
-            </div>
+            </header>
+            
+            <!-- Card principal da narrativa -->
+            <main>
+                <div class="story-container">
+                    <div class="story-card">
+                        <div class="story-header">
+                            <div class="story-icon-wrapper">
+                                <i class="fas fa-microphone-alt" id="storyIcon"></i>
+                            </div>
+                            <span class="story-label">CAPÍTULO 1</span>
+                        </div>
+                        <p class="story-text" id="storyText">
+                            Você está prestes a entrar no estúdio com Matuê para gravar uma faixa. 
+                            O beat já está tocando. O que você faz?
+                        </p>
+                    </div>
+                    
+                    <!-- Seção de decisões -->
+                    <div class="decisions-section">
+                        <div class="section-header">
+                            <div class="section-line"></div>
+                            <h3>SUA ESCOLHA</h3>
+                            <div class="section-line"></div>
+                        </div>
+                        <div class="choices-grid" id="choicesGrid"></div>
+                    </div>
+                    
+                    <!-- Timer e métricas -->
+                    <div class="metrics-panel">
+                        <div class="metric-card timer-card">
+                            <div class="metric-header">
+                                <i class="fas fa-hourglass-half"></i>
+                                <span>Tempo restante</span>
+                            </div>
+                            <div class="timer-display" id="timerDisplay">07:02:25</div>
+                            <div class="timer-track">
+                                <div class="timer-fill" id="timerFill"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="metric-card stats-card">
+                            <div class="metric-header">
+                                <i class="fas fa-chart-line"></i>
+                                <span>Jornada</span>
+                            </div>
+                            <div class="stats-content">
+                                <div class="stat">
+                                    <span class="stat-label">Decisões</span>
+                                    <span class="stat-value" id="decisionsCount">0</span>
+                                </div>
+                                <div class="stat">
+                                    <span class="stat-label">Flow</span>
+                                    <span class="stat-value" id="flowLevel">0%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Botão de reinício -->
+                    <button class="restart-button" id="restartButton">
+                        <i class="fas fa-undo-alt"></i>
+                        <span>Reiniciar jornada</span>
+                    </button>
+                </div>
+            </main>
+            
+            <!-- Footer sofisticado -->
+            <footer class="footer">
+                <div class="footer-content">
+                    <div class="footer-logo">
+                        <i class="fas fa-music"></i>
+                        <span>30PRAUM STUDIOS</span>
+                    </div>
+                    <div class="footer-links">
+                        <a href="#">Sobre a experiência</a>
+                        <a href="#">Universo Matuê</a>
+                    </div>
+                </div>
+                <div class="footer-copyright">
+                    <p>© 2024 · Uma experiência interativa no universo de Matuê</p>
+                </div>
+            </footer>
         </div>
-
-        <!-- Área de escolhas -->
-        <div class="choices-area">
-            <h3><i class="fas fa-compass"></i> SUA DECISÃO</h3>
-            <div id="choices" class="choices-container"></div>
-        </div>
-
-        <!-- Timer com design moderno -->
-        <div class="timer-card">
-            <div class="timer-label">
-                <i class="fas fa-hourglass-half"></i>
-                <span>TEMPO PARA DECIDIR</span>
-            </div>
-            <div id="timer" class="timer-display">07:02:25</div>
-            <div class="timer-bar">
-                <div id="timer-progress" class="timer-progress"></div>
-            </div>
-        </div>
-
-        <!-- Botão reiniciar -->
-        <div class="restart-btn-container">
-            <button id="restart-btn" class="restart-btn">
-                <i class="fas fa-sync-alt"></i>
-                <span>NOVA JORNADA</span>
-            </button>
-        </div>
-
-        <!-- Footer -->
-        <footer>
-            <p><i class="fas fa-music"></i> Baseado no universo 30PRAUM | @matue</p>
-        </footer>
     </div>
-
+    
     <script src="script.js"></script>
 </body>
 </html>

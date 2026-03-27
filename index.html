@@ -3,87 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escolha Seu Flow - Matuê</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="icon.png">
-    <title>O futuro da IA, está em suas mãos</title>
 </head>
-<style>
-    body{
-    min-height:150vh;
-    }
-
-    ::-webkit-scrollbar 
-    {
-        width: 12px;
-    }
-
-    ::-webkit-scrollbar-track 
-    {
-        background: green;
-    }
-
-    ::-webkit-scrollbar-thumb 
-    {
-        background: #323683;
-        border-radius: 14px;
-    }
-
-    ::-webkit-scrollbar-thumb:hover 
-    {
-        opacity: .95;
-    }
-  </style>
 <body>
-    <div class="caixa-principal">
-        <br>
-        <h1>RasinformaticA</h1>
-        <br>
-        <h2>Você decide o futuro da IA</h2>
-        <div class="caixa-perguntas"></div>
-        <div class="caixa-alternativas"></div>
-        <div class="caixa-resultado">
-            <p class="texto-resultado"></p>
-        </div>
-        <br>
-        
-        <div class="relogio">
-            <div>
-                <span id="horas">00</span>
-                <span class="tempo">Horas</span>
+    <div class="container">
+        <header>
+            <h1>🎙️ ESCOLHA SEU FLOW</h1>
+            <h2>Uma jornada no universo de Matuê</h2>
+        </header>
+
+        <main>
+            <div class="story-box">
+                <p id="story-text">
+                    Você está prestes a entrar no estúdio com Matuê para gravar uma faixa. 
+                    O beat já está tocando. O que você faz?
+                </p>
             </div>
-    
-            <div>
-                <span id="minutos">00</span>
-                <span class="tempo">Minutos</span>
+
+            <div class="choices" id="choices">
+                <button onclick="makeChoice(1)">🔥 Mandar um flow superfantástico na hora</button>
+                <button onclick="makeChoice(2)">🎧 Pedir pra ouvir o beat mais uma vez</button>
+                <button onclick="makeChoice(3)">💡 Sugerir um sample de guitarra (estilo Máquina do Tempo)</button>
             </div>
-    
-            <div>
-                <span id="segundos">00</span>
-                <span class="tempo">Segundos</span>
+
+            <div class="timer">
+                <span id="timer">07:00:00</span>
             </div>
-        </div>
-        <section>
-            <footer>
-                <a href="https://github.com/professor-rafael" target="_blank" rel="noopener noreferrer">
-                    <img src="github.png"></img>
-                    <p>Github</p>
-                </a>
-                <a href="https://www.youtube.com/channel/UCBRq6fO_-P6yPOVbC0yZVmQ" target="_blank" rel="noopener noreferrer">
-                    <img src="youtube.png"></img>
-                    <p>Youtube</p>
-                    <a href="https://api.whatsapp.com/send?phone=5543996561825" target="_blank" rel="noopener noreferrer">
-                    <img src="Whatsapp.png"></img>
-                    <p>Whatsapp</p>
-                    </a>
-                    <a href="https://www.deepseek.com/">
-                        <img src="deepseek-color.png"></img>
-                        <p>Deepseek</p>
-                    </a>
-                </a>
-            </footer>
-        </section>
+
+            <div class="restart">
+                <button onclick="restartGame()">🔄 Recomeçar jornada</button>
+            </div>
+        </main>
+
+        <footer>
+            <p>🎵 Baseado no universo 30PRAUM | @matue</p>
+        </footer>
     </div>
-    
+
+    <script src="script.js"></script>
 </body>
-<script src="script.js"></script>
 </html>

@@ -2,42 +2,68 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Escolha Seu Flow - Matuê</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Modo Matuê | Escolha Seu Flow</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>🎙️ ESCOLHA SEU FLOW</h1>
-            <h2>Uma jornada no universo de Matuê</h2>
-        </header>
+        <!-- Header com logo e título -->
+        <div class="header">
+            <div class="logo-container">
+                <i class="fas fa-crown logo-icon"></i>
+                <span class="logo-text">30PRAUM</span>
+            </div>
+            <h1>ESCOLHA SEU FLOW</h1>
+            <p class="subtitle">Uma jornada no universo de Matuê</p>
+        </div>
 
-        <main>
-            <div class="story-box">
-                <p id="story-text">
+        <!-- Card principal da história -->
+        <div class="story-card">
+            <div class="story-content">
+                <div class="story-icon">
+                    <i class="fas fa-microphone-alt"></i>
+                </div>
+                <p id="story-text" class="story-text">
                     Você está prestes a entrar no estúdio com Matuê para gravar uma faixa. 
                     O beat já está tocando. O que você faz?
                 </p>
             </div>
+        </div>
 
-            <div class="choices" id="choices">
-                <button onclick="makeChoice(1)">🔥 Mandar um flow superfantástico na hora</button>
-                <button onclick="makeChoice(2)">🎧 Pedir pra ouvir o beat mais uma vez</button>
-                <button onclick="makeChoice(3)">💡 Sugerir um sample de guitarra (estilo Máquina do Tempo)</button>
+        <!-- Área de escolhas -->
+        <div class="choices-area">
+            <h3><i class="fas fa-compass"></i> SUA DECISÃO</h3>
+            <div id="choices" class="choices-container"></div>
+        </div>
+
+        <!-- Timer com design moderno -->
+        <div class="timer-card">
+            <div class="timer-label">
+                <i class="fas fa-hourglass-half"></i>
+                <span>TEMPO PARA DECIDIR</span>
             </div>
-
-            <div class="timer">
-                <span id="timer">07:00:00</span>
+            <div id="timer" class="timer-display">07:02:25</div>
+            <div class="timer-bar">
+                <div id="timer-progress" class="timer-progress"></div>
             </div>
+        </div>
 
-            <div class="restart">
-                <button onclick="restartGame()">🔄 Recomeçar jornada</button>
-            </div>
-        </main>
+        <!-- Botão reiniciar -->
+        <div class="restart-btn-container">
+            <button id="restart-btn" class="restart-btn">
+                <i class="fas fa-sync-alt"></i>
+                <span>NOVA JORNADA</span>
+            </button>
+        </div>
 
+        <!-- Footer -->
         <footer>
-            <p>🎵 Baseado no universo 30PRAUM | @matue</p>
+            <p><i class="fas fa-music"></i> Baseado no universo 30PRAUM | @matue</p>
         </footer>
     </div>
 
